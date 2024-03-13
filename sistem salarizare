@@ -1,0 +1,151 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+// Structura pentru reprezentarea unui angajat
+struct Angajat {
+    string nume;
+    double salariu;
+};
+
+// Functie pentru adaugarea unui nou angajat
+void adaugaAngajat(Angajat angajati[], int& numarAngajati) {
+    cout << "Introduceti numele angajatului: ";
+    cin >> angajati[numarAngajati].nume;
+    cout << "Introduceti salariul angajatului: ";
+    cin >> angajati[numarAngajati].salariu;
+    numarAngajati++;
+}
+
+// Functie pentru afisarea listei angajatilor si salariilor lor
+void afiseazaAngajati(const Angajat angajati[], int numarAngajati) {
+    cout << "Lista angajatilor:\n";
+    for (int i = 0; i < numarAngajati; i++) {
+        cout << "Nume: " << angajati[i].nume << ", Salariu: " << angajati[i].salariu << endl;
+    }
+}
+
+// Functie pentru calcularea salariului mediu si salariului maxim
+void calculeazaSalarii(const Angajat angajati[], int numarAngajati) {
+    if (numarAngajati == 0) {
+        cout << "Nu exista angajati inregistrati.\n";
+        return;
+    }
+
+    double sumaSalarii = 0;
+    double salariuMaxim = angajati[0].salariu;
+
+    for (int i = 0; i < numarAngajati; i++) {
+        sumaSalarii += angajati[i].salariu;
+
+        if (angajati[i].salariu > salariuMaxim) {
+            salariuMaxim = angajati[i].salariu;
+        }
+    }
+
+    double salariuMediu = sumaSalarii / numarAngajati;
+
+    cout << "Salariul mediu: " << salariuMediu << endl;
+    cout << "Salariul maxim: " << salariuMaxim << endl;
+}
+
+// Functie pentru calcularea salariului brut, net si taxelor
+void calculeazaSalariiNete(const Angajat angajati[], int numarAngajati) {
+    if (numarAngajati == 0) {
+        cout << "Nu exista angajati inregistrati.\n";
+        return;
+    }
+
+    ofstream fisier("salarii.txt");
+    if (!fisier) {
+        cout << "Eroare la deschiderea fisierului.\n";
+        return;
+    }
+
+    for (int i = 0; i < numarAngajati; i++) {
+        double salariuBrut = angajati[i].salariu * 1.75;
+        double taxe = salariuBrut - angajati[i].salariu;
+
+        fisier << "Nume: " << angajati[i].nume << ", Salariu Brut: " << salariuBrut << ", Salariu Net: " << angajati[i].salariu << ", Taxe: " << taxe << endl;
+    }
+
+    fisier.close();
+    cout << "Salariile nete au fost salvate in fisierul salarii.txt\n";
+}
+
+int main() {
+    Angajat angajati[100];  // Array-ul de angajati
+    int numarAngajati = 0;  // Numarul actual de angajati
+
+    int optiune;
+
+    do {
+        // Afisare meniu
+        cout << "\nMeniu:\n";
+        cout << "1. Adauga angajat\n";
+        cout << "2. Afiseaza lista angajatilor\n";
+        cout << "3. Calculeaza salariul mediu si salariul maxim\n";
+        cout << "4. Calculeaza salariul brut, net si taxele\n";
+        cout << "5. Iesire\n";
+        cout << "Introduceti optiunea: ";
+        cin >> optiune;
+
+        switch (optiune) {
+            case 1:
+                adaugaAngajat(angajati, numarAngajati);
+                break;
+            case 2:
+                afiseazaAngajati(angajati, numarAngajati);
+                break;
+            case 3:
+                calculeazaSalarii(angajati, numarAngajati);
+                break;
+            case 4:
+                calculeazaSalariiNete(angajati, numarAngajati);
+                break;
+            case 5:
+                cout << "Programul s-a inchis.\n";
+                break;
+            default:
+                cout << "Optiune invalida. Va rugam selectati o optiune valida.\n";
+                break;
+        }
+    } while (optiune != 5);
+
+    return 0;
+}
+/*// Functie pentru stergerea unui angajat
+int stergeAngajat(Angajat angajati[], int& numarAngajati) {
+    if (numarAngajati == 0) {
+        cout << "Nu exista angajati inregistrati.\n";
+        return numarAngajati;
+    }
+
+    cout << "Introduceti numele angajatului pe care doriti sa il stergeti: ";
+    string nume;
+    cin >> nume;
+
+    bool angajatGasit = false;
+    int indexAngajat;
+
+    for (int i = 0; i < numarAngajati; i++) {
+        if (angajati[i].nume == nume) {
+            angajatGasit = true;
+            indexAngajat = i;
+            break;
+        }
+    }
+
+    if (angajatGasit) {
+        // Inlocuieste angajatul gasit cu ultimul angajat din lista
+        angajati[indexAngajat] = angajati[numarAngajati - 1];
+        numarAngajati--;
+        cout << "Angajatul a fost sters cu succes.\n";
+    } else {
+        cout << "Angajatul nu a fost gasit.\n";
+    }
+
+    return numarAngajati;
+}*/
